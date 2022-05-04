@@ -19,15 +19,16 @@ function LoginMain() {
     };
 
     axios
-      .post("http://127.0.0.1:8000/dj_rest_auth/login/", user)
+      .post("http://127.0.0.1:8080/user/login", user)
       .then((response) => {
-        if (response.data.access_token) {
+        if (response.data.result.jwt) {
           localStorage.clear();
           localStorage.setItem("token", response.data.access_token);
 
           // 사용하려면 App.js에서 /로 라우팅해야 한다
           window.location.replace("/");
         } else {
+          console.log(response);
           setEmail("");
           setPassword("");
           localStorage.clear();
@@ -35,7 +36,6 @@ function LoginMain() {
         }
       })
       .catch((err) => {
-        console.clear();
         alert("아이디 또는 비밀번호가 일치하지 않습니다");
         setEmail("");
         setPassword("");

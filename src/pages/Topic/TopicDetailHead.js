@@ -1,24 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import axios from "axios";
+import { Link } from "react-router-dom";
 
 function TopicDetailHead(props) {
   const onSubmit = (e) => {
-    e.preventDefault();
-
-    axios
-      .get("http://localhost:8000/enrollment/" + props.topicData.id, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log("test");
   };
+
+  if (props.topicData.chapter_lesson === null) {
+    return;
+  }
 
   return (
     <TopicDetailContainerHead className="CODE__1--bg--image">
@@ -33,7 +24,7 @@ function TopicDetailHead(props) {
             <h1>{props.topicData.name}</h1>
           </TopicDetailContainerHeadFirstTitle>
           <TopicDetailContainerHeadFirstLanguage>
-            {props.topicData.category}
+            {props.topicData.title}
           </TopicDetailContainerHeadFirstLanguage>
           <TopicDetailContainerHeadFirstSummary>
             {props.topicData.description}
@@ -49,34 +40,37 @@ function TopicDetailHead(props) {
                   <TopicProgressBarBase />
                   <TopicProgressBarIng
                     progress={
-                      props.topicData.completion_set &&
-                      (props.topicData.completion_set.length /
-                        props.topicData.lesson_count) *
+                      props.topicData.chapter_lesson &&
+                      (props.topicData.chapter_lesson.split(",").length /
+                        props.topicData.chapter_lesson.split(",").length) *
                         100
                     }
                   />
                   <TopicProgressBarDevider />
                   <TopicProgressCurrentPoint
                     progress={
-                      props.topicData.completion_set &&
-                      (props.topicData.completion_set.length /
-                        props.topicData.lesson_count) *
+                      props.topicData.chapter_lesson &&
+                      (props.topicData.chapter_lesson.split(",").length /
+                        props.topicData.chapter_lesson.split(",").length) *
                         100
                     }
                   />
                 </TopicProgressBarContainer>
                 <TopicProgressTextContainer>
                   <TopicProgressStartPoint>
-                    {props.topicData.completion_set &&
-                      (props.topicData.completion_set.length /
-                        props.topicData.lesson_count) *
+                    {props.topicData.chapter_lesson &&
+                      (props.topicData.chapter_lesson.split(",").length /
+                        props.topicData.chapter_lesson.split(",").length) *
                         100}
                     % 완료
                   </TopicProgressStartPoint>
                   <TopicProgressEndPoint>
                     {props.topicData.completion_set &&
                       props.topicData.completion_set.length}
-                    /{props.topicData.lesson_count} 레슨
+                    /
+                    {props.topicData.chapter_lesson &&
+                      props.topicData.chapter_lesson.split(",").length + 1}{" "}
+                    레슨
                   </TopicProgressEndPoint>
                 </TopicProgressTextContainer>
               </TopicProgress>
@@ -86,8 +80,8 @@ function TopicDetailHead(props) {
         <TopicDetailContainerHeadSecond>
           <TopicDetailContainerHeadSecondRow>
             <span>포함 코스 : </span>
-            {props.topicData.course &&
-              props.topicData.course.map((course, index) => (
+            {props.topicData.chapter_lesson &&
+              props.topicData.chapter_lesson.split("^").map((course, index) => (
                 <a key={index} href={"/course/" + course.id}>
                   <span>{course.name}</span>
                 </a>
@@ -97,17 +91,20 @@ function TopicDetailHead(props) {
           {props.topicData.enrollment_set &&
           props.topicData.enrollment_set.indexOf(props.topicData.id) < 0 ? (
             <TopicDetailContainerHeadSecondBtn onClick={onSubmit}>
-              {props.topicData.price}
+              {props.topicData.price
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </TopicDetailContainerHeadSecondBtn>
           ) : (
-            <TopicDetailContainerHeadSecondBtn
-              onClick={() =>
-                (window.location.href =
-                  "/lesson/" + props.topicData.chapter_set[0].lesson_set[0].id)
-              }
+            <TopicDetailContainerHeadSecondLink
+              to="/payment"
+              state={props.topicData}
             >
-              강의 시작하기
-            </TopicDetailContainerHeadSecondBtn>
+              {props.topicData.price &&
+                props.topicData.price
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+            </TopicDetailContainerHeadSecondLink>
           )}
         </TopicDetailContainerHeadSecond>
       </TopicDetailContainerHeadWrapper>
@@ -433,6 +430,47 @@ const TopicDetailContainerHeadSecondInstructorsWrapper = styled.div`
 `;
 
 const TopicDetailContainerHeadSecondBtn = styled.button`
+  order: -1;
+  width: 100%;
+  max-width: 30.5rem;
+  margin: 0 auto 4rem;
+  font-size: 1.7rem;
+  font-weight: 500;
+  letter-spacing: -0.39px;
+  color: #fff;
+  text-align: center;
+  border-radius: 2.2rem;
+  -webkit-box-shadow: 0 0.2rem 2rem 0 rgb(0 208 206 / 18%);
+  box-shadow: 0 0.2rem 2rem 0 rgb(0 208 206 / 18%);
+  background-color: #1ee4c7;
+  cursor: pointer;
+  height: 4.4rem;
+  padding-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+
+  &.CODE__1--btn {
+    -webkit-box-shadow: 0 0.2rem 2rem 0 rgba(51, 204, 204, 0.29) !important;
+    box-shadow: 0 0.2rem 2rem 0 rgba(51, 204, 204, 0.29) !important;
+    background-image: linear-gradient(
+      277deg,
+      rgba(38, 204, 217, 0.94),
+      rgba(0, 204, 255, 0.76)
+    ) !important;
+  }
+
+  @media (min-width: 48em) {
+    order: 0;
+    margin: 5rem 0 0;
+  }
+  @media (min-width: 62em) {
+    margin-top: auto;
+  }
+`;
+
+const TopicDetailContainerHeadSecondLink = styled(Link)`
   order: -1;
   width: 100%;
   max-width: 30.5rem;

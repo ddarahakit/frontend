@@ -7,10 +7,7 @@ function TopicContent(props) {
   return (
     <TopicDetailContainerContent>
       <TopicContentInfo topicData={props.topicData} />
-      <TopicContentChapterList
-        tid={props.topicData.id}
-        chapterData={props.topicData.chapter_set}
-      />
+      <TopicContentChapterList topicData={props.topicData} />
     </TopicDetailContainerContent>
   );
 }

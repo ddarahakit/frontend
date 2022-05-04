@@ -74,7 +74,9 @@ function CourseCard(props) {
 
   return (
     <CourseCardContainer>
-      <Filter school={school} setSearch={setSearch} />
+      {/* <Filter school={school} setSearch={setSearch} /> */}
+
+      <Filter courseCount={props.courseData.length} setSearch={setSearch} />
 
       <CourseCardList>
         <CourseCardListWrapper>
@@ -86,9 +88,9 @@ function CourseCard(props) {
                 return (
                   <CourseCardBox
                     onClick={() =>
-                      (window.location.href = "/course/" + course.id)
+                      (window.location.href = "/course/" + course.idx)
                     }
-                    key={course.id}
+                    key={course.idx}
                   >
                     <CourseCardBoxWrapper className="CourseCard">
                       <CourseCardHeader>
@@ -108,7 +110,7 @@ function CourseCard(props) {
                         <CourseCardImageContainer>
                           <CourseCardImageWrapper>
                             <CourseCardImage
-                              src={course.course_imageurl}
+                              src={course.imageurl}
                               alt="course icon"
                             />
                           </CourseCardImageWrapper>

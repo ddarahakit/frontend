@@ -1,28 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 
 function TopicChapter(props) {
   const [isSectionOpen, setIsSectionOpen] = useState(true);
-  const getLesson = async (lid) => {
-    try {
-      let response;
-      localStorage.getItem("token") !== null
-        ? (response = await axios.get(
-            "http://127.0.0.1:8000/lesson/" + props.tid + "/" + lid,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          ))
-        : console.log("로그인 필요");
-
-      console.log(response.data.result);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   return (
     <TopicDetailContainerChapter
@@ -38,10 +18,10 @@ function TopicChapter(props) {
           className="CODE__1--bg--image"
         >
           <TopicDetailContainerChapterSectionIndex className="white">
-            {props.index > 9 ? props.index : "0" + props.index}
+            {Number(props.index) > 9 ? props.index : "0" + props.index}
           </TopicDetailContainerChapterSectionIndex>
           <TopicDetailContainerChapterSectionTitleBox>
-            <h2> {props.chapter.name}</h2>
+            <h2> {props.chapter.split(":")[0]}</h2>
             <TopicDetailContainerChapterSectionIcon
               isSectionOpen={isSectionOpen}
               className={isSectionOpen ? "fa fa-minus" : "fa fa-plus"}
@@ -51,33 +31,35 @@ function TopicChapter(props) {
       </TopicDetailContainerChapterWrapper>
       <TopicDetailContainerChapterChildren>
         <TopicDetailContainerChapterListWrapper>
-          {props.chapter.lesson_set &&
-            props.chapter.lesson_set.map((lesson, index) => {
-              return (
-                <TopicDetailContainerChapterLesson
-                  key={index}
-                  //className={lesson.locked ? "locked" : ""}
-                >
-                  <TopicDetailContainerChapterLessonA
-                    onClick={() => {
-                      getLesson(lesson.id);
-                    }}
+          {props.chapter.split(":")[1] &&
+            props.chapter
+              .split(":")[1]
+              .split(",")
+              .map((lesson, index) => {
+                return (
+                  <TopicDetailContainerChapterLesson
+                    key={index}
+                    //className={lesson.locked ? "locked" : ""}
                   >
-                    <LessonTypeImgDiv className="CODE__1--bg--image">
-                      <LessonTypeImg src="https://www.codeit.kr/static/images/catalog/lessonType--VIDEO--white.png" />
-                    </LessonTypeImgDiv>
-                    <TopicDetailContainerChapterLessonTitle>
-                      <h3>{lesson.name}</h3>
-                    </TopicDetailContainerChapterLessonTitle>
-                  </TopicDetailContainerChapterLessonA>
-                  {/* {lesson.locked ? (
+                    <TopicDetailContainerChapterLessonA>
+                      <LessonTypeImgDiv className="CODE__1--bg--image">
+                        <LessonTypeImg src="https://www.codeit.kr/static/images/catalog/lessonType--VIDEO--white.png" />
+                      </LessonTypeImgDiv>
+                      <TopicDetailContainerChapterLessonTitle>
+                        <h3>{lesson}</h3>
+                      </TopicDetailContainerChapterLessonTitle>
+                    </TopicDetailContainerChapterLessonA>
+                    {/* {lesson.locked ? (
                     <TopicDetailContainerChapterLessonLock className="fas fa-lock" />
                   ) : (
                     ""
                   )} */}
-                </TopicDetailContainerChapterLesson>
-              );
-            })}
+                    <TopicDetailContainerChapterLessonTime>
+                      {props.time.split(",")[index]}
+                    </TopicDetailContainerChapterLessonTime>
+                  </TopicDetailContainerChapterLesson>
+                );
+              })}
         </TopicDetailContainerChapterListWrapper>
       </TopicDetailContainerChapterChildren>
       <TopicDetailContainerChapterEndLine />
@@ -249,6 +231,16 @@ const TopicDetailContainerChapterLessonLock = styled.i`
   color: #a9abb7;
   position: absolute;
   top: 50%;
+  right: 1.5rem;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  content: "";
+`;
+
+const TopicDetailContainerChapterLessonTime = styled.span`
+  color: #a9abb7;
+  position: relative;
+  top: 0.8rem;
   right: 1.5rem;
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);

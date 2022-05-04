@@ -24,7 +24,7 @@ function TopicMain() {
         let response;
         localStorage.getItem("token") !== null
           ? (response = await axios.get(
-              "http://127.0.0.1:8000/topic/" + params.id,
+              "http://127.0.0.1:8080/course/" + params.idx,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -32,16 +32,19 @@ function TopicMain() {
               }
             ))
           : (response = await axios.get(
-              "http://localhost:8000/topic/" + params.id
+              "http://localhost:8080/course/" + params.idx
             ));
+        console.log(response);
 
         setTopicData(response.data.result);
+        console.log(response);
       } catch (e) {
         localStorage.clear();
         let response = await axios.get(
-          "http://localhost:8000/topic/" + params.id
+          "http://localhost:8080/course/" + params.idx
         );
         setTopicData(response.data.result);
+        console.log(response);
 
         console.log(e);
       }

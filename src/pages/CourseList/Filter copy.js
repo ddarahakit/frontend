@@ -5,7 +5,10 @@ import styled from "styled-components";
 function Filter(props) {
   return (
     <div>
-      <FilterText>전체 코스 ({props.courseCount})</FilterText>
+      <FilterText>
+        {props.school ? props.school.name : ""} (
+        {props.school ? props.school.course_count : ""})
+      </FilterText>
       <FilterActions>
         <Search>
           <SearchIcon className="fa fa-search" />

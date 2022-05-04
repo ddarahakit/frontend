@@ -5,14 +5,14 @@ import TopicChapter from "./TopicChapter";
 function TopicContentChapterList(props) {
   return (
     <TopicDetailContainerChapters>
-      {props.chapterData &&
-        props.chapterData.map((chapter, index) => {
+      {props.topicData.chapter_lesson &&
+        props.topicData.chapter_lesson.split("^").map((chapter, index) => {
           return (
             <TopicChapter
-              key={index}
+              key={index + 1}
               index={index + 1}
-              tid={props.tid}
               chapter={chapter}
+              time={props.topicData.chapter_time.split("^")[index]}
             />
           );
         })}

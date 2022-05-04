@@ -25,16 +25,16 @@ function CourseList() {
         //response1 = await axios.get("http://127.0.0.1:8000/school/list");
         //setSchoolData(response1.data.result);
 
-        let response2;
+        let response;
         isAuth
-          ? (response2 = await axios.get("http://127.0.0.1:8080/course", {
+          ? (response = await axios.get("http://127.0.0.1:8080/course", {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             }))
-          : (response2 = await axios.get("http://127.0.0.1:8080/course"));
-        console.log(response2.data.result);
-        setCourseData(response2.data.result);
+          : (response = await axios.get("http://127.0.0.1:8080/course"));
+        console.log(response.data.result);
+        setCourseData(response.data.result);
       } catch (e) {
         console.log(e);
       }

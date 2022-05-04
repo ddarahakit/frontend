@@ -62,6 +62,11 @@ const GlobalStyles = createGlobalStyle`
     input:focus {
       outline: none;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
 `;
 
 export default GlobalStyles;

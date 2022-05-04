@@ -24,7 +24,7 @@ function CourseInfomation() {
         let response;
         isAuth
           ? (response = await axios.get(
-              "http://127.0.0.1:8000/course/" + params.id,
+              "http://127.0.0.1:8080/course/" + params.idx,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -32,7 +32,7 @@ function CourseInfomation() {
               }
             ))
           : (response = await axios.get(
-              "http://127.0.0.1:8000/course/" + params.id
+              "http://127.0.0.1:8080/course/" + params.idx
             ));
 
         setCourseData(response.data.result);
@@ -84,7 +84,7 @@ function CourseInfomation() {
           <CourseInfoBoxWrapper>
             <CourseInfoBoxLanguage>
               <CourseInfoBoxLanguageWrapper>
-                {courseData.category}
+                {courseData.title}
               </CourseInfoBoxLanguageWrapper>
             </CourseInfoBoxLanguage>
             <CourseInfoBoxTop>
